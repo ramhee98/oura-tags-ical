@@ -3,6 +3,7 @@ from typing import List, Dict
 from icalendar import Calendar, Event
 from uuid import uuid4
 import os
+import re
 
 # Map known tag_type_codes to human-readable names with emoji
 TAG_LABELS = {
@@ -31,7 +32,10 @@ TAG_LABELS = {
     "tag_generic_no_caffeine": "🚫☕ No Caffeine",
 }
 
-def format_tag_label(tag: Dict) -> str:
+# Regex to detect UUID-style tag_type_codes (custom tags)
+_UUID_PATTERN = re.compile(r'^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$', re.IGNORECASE)
+
+def format_tag_label(tag: Dict, custom_tag_names: dict = None) -> str:
     """Convert a tag to a human-readable label."""
     tag_code = tag.get("tag_type_code", "")
 
@@ -39,10 +43,18 @@ def format_tag_label(tag: Dict) -> str:
     if tag_code in TAG_LABELS:
         return TAG_LABELS[tag_code]
 
-    # Use custom_name if available
+    # Check user-configured custom tag names
+    if custom_tag_names and tag_code in custom_tag_names:
+        return f"🏷️ {custom_tag_names[tag_code]}"
+
+    # Use custom_name from API if available
     custom_name = tag.get("custom_name")
     if custom_name:
         return f"🏷️ {custom_name}"
+
+    # For UUID-style codes, show as unknown custom tag
+    if _UUID_PATTERN.match(tag_code):
+        return f"🏷️ Custom Tag ({tag_code[:8]})"
 
     # Fall back to cleaning up the tag_type_code
     label = tag_code.replace("tag_generic_", "").replace("_", " ").title()
@@ -81,7 +93,7 @@ def load_existing_calendar(path: str) -> tuple[Calendar, set[str]]:
         empty_cal.add('version', '2.0')
         return empty_cal, set()
 
-def generate_tags_calendar(tag_data: List[Dict], existing_calendar: Calendar, existing_uids: set[str]) -> Calendar:
+def generate_tags_calendar(tag_data: List[Dict], existing_calendar: Calendar, existing_uids: set[str], custom_tag_names: dict = None) -> Calendar:
     """Generate iCal events from Oura enhanced tag data."""
     cal = existing_calendar
 
@@ -91,7 +103,7 @@ def generate_tags_calendar(tag_data: List[Dict], existing_calendar: Calendar, ex
             print(f"Skipping existing event with UID: {uid}")
             continue
 
-        tag_label = format_tag_label(tag)
+        tag_label = format_tag_label(tag, custom_tag_names)
         tag_code = tag.get("tag_type_code", "unknown")
         comment = tag.get("comment", "")
 

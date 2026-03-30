@@ -6,3 +6,9 @@ ICAL_OUTPUT_PATH = "./tags.ics"
 
 # Number of past days to fetch tag data for
 DAYS_BACK = 7
+
+# Map custom tag UUIDs to human-readable names
+# Run once to see UUIDs in event descriptions, then fill in names here
+CUSTOM_TAG_NAMES = {
+    # "your-tag-uuid-here": "My Custom Tag",
+}

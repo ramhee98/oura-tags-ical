@@ -1,4 +1,4 @@
-from config import OURA_TOKEN, ICAL_OUTPUT_PATH, DAYS_BACK
+from config import OURA_TOKEN, ICAL_OUTPUT_PATH, DAYS_BACK, CUSTOM_TAG_NAMES
 from oura_api.client import fetch_tag_data
 from ical.generator import generate_tags_calendar, save_calendar, load_existing_calendar
 
@@ -17,7 +17,8 @@ def main():
     calendar = generate_tags_calendar(
         tag_data,
         existing_calendar,
-        existing_uids
+        existing_uids,
+        custom_tag_names=CUSTOM_TAG_NAMES
     )
 
     print(f"Saving calendar to {ICAL_OUTPUT_PATH}...")
