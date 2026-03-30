@@ -1,4 +1,4 @@
-from datetime import datetime, timezone, date
+from datetime import datetime, timezone, date, timedelta
 from typing import List, Dict
 from icalendar import Calendar, Event
 from uuid import uuid4
@@ -76,6 +76,7 @@ def load_existing_calendar(path: str) -> tuple[Calendar, set[str]]:
         empty_cal = Calendar()
         empty_cal.add('prodid', '-//ramhee98//oura-tags-ical//EN')
         empty_cal.add('version', '2.0')
+        empty_cal.add('x-wr-calname', 'Oura Tags')
         return empty_cal, set()
 
     try:
@@ -97,6 +98,7 @@ def load_existing_calendar(path: str) -> tuple[Calendar, set[str]]:
         empty_cal = Calendar()
         empty_cal.add('prodid', '-//ramhee98//oura-tags-ical//EN')
         empty_cal.add('version', '2.0')
+        empty_cal.add('x-wr-calname', 'Oura Tags')
         return empty_cal, set()
 
 def generate_tags_calendar(tag_data: List[Dict], existing_calendar: Calendar, existing_uids: set[str], custom_tag_names: dict = None) -> Calendar:
@@ -135,13 +137,14 @@ def generate_tags_calendar(tag_data: List[Dict], existing_calendar: Calendar, ex
             event.add('dtstart', start)
             event.add('dtend', end)
         elif start_time:
-            # Only start time, create a 1-hour event
+            # Only start time, create a 0-minute event
             try:
                 start = datetime.fromisoformat(start_time)
             except Exception as e:
                 print(f"Skipping tag due to invalid time: {e}")
                 continue
             event.add('dtstart', start)
+            event.add('dtend', start)
         elif start_day:
             # All-day event
             try:
