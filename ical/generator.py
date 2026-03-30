@@ -160,14 +160,9 @@ def generate_tags_calendar(tag_data: List[Dict], existing_calendar: Calendar, ex
             continue
 
         # Build description
-        description_parts = [f"Tag: {tag_code}"]
-        if comment:
-            description_parts.append(f"Comment: {comment}")
-        if start_day:
-            description_parts.append(f"Day: {start_day}")
-
         event.add('summary', tag_label)
-        event.add('description', "\n".join(description_parts))
+        if comment:
+            event.add('description', comment)
 
         cal.add_component(event)
 
