@@ -43,9 +43,9 @@ def format_tag_label(tag: Dict, custom_tag_names: dict = None) -> str:
     if tag_code in TAG_LABELS:
         return TAG_LABELS[tag_code]
 
-    # Check user-configured custom tag names
+    # Check user-configured custom tag names (value used as-is, include your own icon)
     if custom_tag_names and tag_code in custom_tag_names:
-        return f"🏷️ {custom_tag_names[tag_code]}"
+        return custom_tag_names[tag_code]
 
     # Use custom_name from API if available
     custom_name = tag.get("custom_name")
