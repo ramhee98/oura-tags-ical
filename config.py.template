@@ -1,0 +1,8 @@
+# Your Oura API personal access token (requires 'tag' scope)
+OURA_TOKEN = "OURA_PERSONAL_ACCESS_TOKEN"
+
+# Path where the generated iCalendar (.ics) file will be saved
+ICAL_OUTPUT_PATH = "./tags.ics"
+
+# Number of past days to fetch tag data for
+DAYS_BACK = 7
