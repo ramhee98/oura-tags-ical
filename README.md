@@ -89,6 +89,7 @@ This will:
 
 ## Example Calendar Output
 
+
 **Title:**
 ```
 ☕ Caffeine
@@ -96,8 +97,7 @@ This will:
 
 **Description:**
 ```
-Tag: tag_generic_caffeine
-Day: 2026-03-29
+(no description, unless a comment is present)
 ```
 
 **Title (custom tag with configured name):**
@@ -105,11 +105,9 @@ Day: 2026-03-29
 🍵 Matcha Latte
 ```
 
-**Description:**
+**Description (if a comment exists):**
 ```
-Tag: d96e0d94-8f35-4708-a2a6-c575164824cc
-Comment: Before bed
-Day: 2026-03-29
+Before bed
 ```
 
 ## Related
