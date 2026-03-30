@@ -13,8 +13,9 @@ Generate a tag calendar from your Oura Ring [Enhanced Tags](https://support.oura
   - ☕ Caffeine, 🍷 Alcohol, 🍽️ Late Meal, 😰 Stressful Day
   - 🏋️ Workout, 🌳 Outdoor Time, 🧘 Meditation, 😴 Nap
   - 📱 Screen Time, 🤒 Sick, 🧖 Sauna, 🥶 Cold Exposure
+  - 🍺 Beer, 🍷 Wine, ☕ Coffee, ✈️ Airplane
   - 💊 Supplement, 💧 Hydration, 📓 Journal, and more
-- Custom tags shown with their user-defined names
+- Configurable custom tag names with custom icons via `CUSTOM_TAG_NAMES`
 - Includes tag comments in event descriptions
 - Handles timed events, start-only events, and all-day events
 - Compatible with major calendar clients
@@ -64,6 +65,12 @@ ICAL_OUTPUT_PATH = "./tags.ics"
 
 # Number of past days to fetch tag data for
 DAYS_BACK = 7
+
+# Map custom tag UUIDs to human-readable names (include your own emoji/icon)
+# Find your tag UUIDs by running: python3 main.py (check the Description field in generated events)
+CUSTOM_TAG_NAMES = {
+    "d96e0d94-8f35-4708-a2a6-c575164824cc": "🍵 Matcha Latte",
+}
 ```
 
 ## Usage
@@ -93,14 +100,14 @@ Tag: tag_generic_caffeine
 Day: 2026-03-29
 ```
 
-**Title (custom tag):**
+**Title (custom tag with configured name):**
 ```
-🏷️ Magnesium
+🍵 Matcha Latte
 ```
 
 **Description:**
 ```
-Tag: tag_custom_12345
+Tag: d96e0d94-8f35-4708-a2a6-c575164824cc
 Comment: Before bed
 Day: 2026-03-29
 ```
