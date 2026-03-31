@@ -34,8 +34,8 @@ TAG_LABELS = {
     "tag_generic_beer": "🍺 Beer",
     "tag_generic_coffee": "☕ Coffee",
     "tag_generic_wine": "🍷 Wine",
-    "tag_sleep_alcohol": "🍷 Alcohol (Sleep)",
-    "tag_sleep_sauna": "🧖 Sauna (Sleep)",
+    "tag_sleep_alcohol": "🍷 Alcohol",
+    "tag_sleep_sauna": "🧖 Sauna",
 }
 
 # Regex to detect UUID-style tag_type_codes (custom tags)
