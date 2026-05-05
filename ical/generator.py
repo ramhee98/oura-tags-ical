@@ -134,6 +134,10 @@ def generate_tags_calendar(tag_data: List[Dict], existing_calendar: Calendar, ex
             except Exception as e:
                 print(f"Skipping tag due to invalid time: {e}")
                 continue
+            if start.tzinfo is None:
+                start = start.replace(tzinfo=timezone.utc)
+            if end.tzinfo is None:
+                end = end.replace(tzinfo=timezone.utc)
             event.add('dtstart', start)
             event.add('dtend', end)
         elif start_time:
@@ -143,6 +147,8 @@ def generate_tags_calendar(tag_data: List[Dict], existing_calendar: Calendar, ex
             except Exception as e:
                 print(f"Skipping tag due to invalid time: {e}")
                 continue
+            if start.tzinfo is None:
+                start = start.replace(tzinfo=timezone.utc)
             event.add('dtstart', start)
             event.add('dtend', start)
         elif start_day:
