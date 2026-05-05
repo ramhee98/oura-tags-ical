@@ -22,7 +22,8 @@ def main():
     )
 
     print(f"Saving calendar to {ICAL_OUTPUT_PATH}...")
-    save_calendar(calendar, ICAL_OUTPUT_PATH)
+    if not save_calendar(calendar, ICAL_OUTPUT_PATH):
+        raise SystemExit(1)
 
     print("Done.")
 

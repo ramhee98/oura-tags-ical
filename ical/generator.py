@@ -199,6 +199,15 @@ def generate_tags_calendar(tag_data: List[Dict], existing_calendar: Calendar, ex
     )
     return cal
 
-def save_calendar(calendar: Calendar, path: str):
-    with open(path, 'wb') as f:
-        f.write(calendar.to_ical())
+def save_calendar(calendar: Calendar, path: str) -> bool:
+    """Write the calendar to disk. Returns True on success, False on I/O error."""
+    try:
+        directory = os.path.dirname(path)
+        if directory:
+            os.makedirs(directory, exist_ok=True)
+        with open(path, 'wb') as f:
+            f.write(calendar.to_ical())
+        return True
+    except OSError as e:
+        print(f"❌ Failed to save calendar to '{path}': {e}")
+        return False
