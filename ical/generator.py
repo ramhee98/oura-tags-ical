@@ -104,11 +104,16 @@ def load_existing_calendar(path: str) -> tuple[Calendar, set[str]]:
 def generate_tags_calendar(tag_data: List[Dict], existing_calendar: Calendar, existing_uids: set[str], custom_tag_names: dict = None) -> Calendar:
     """Generate iCal events from Oura enhanced tag data."""
     cal = existing_calendar
+    added = 0
+    skipped_existing = 0
+    skipped_invalid = 0
+    skipped_no_time = 0
 
     for tag in tag_data:
         uid = tag.get("id") or str(uuid4())
         if uid in existing_uids:
             print(f"Skipping existing event with UID: {uid}")
+            skipped_existing += 1
             continue
 
         tag_label = format_tag_label(tag, custom_tag_names)
@@ -133,6 +138,7 @@ def generate_tags_calendar(tag_data: List[Dict], existing_calendar: Calendar, ex
                 end = datetime.fromisoformat(end_time)
             except Exception as e:
                 print(f"Skipping tag due to invalid time: {e}")
+                skipped_invalid += 1
                 continue
             if start.tzinfo is None:
                 start = start.replace(tzinfo=timezone.utc)
@@ -146,6 +152,7 @@ def generate_tags_calendar(tag_data: List[Dict], existing_calendar: Calendar, ex
                 start = datetime.fromisoformat(start_time)
             except Exception as e:
                 print(f"Skipping tag due to invalid time: {e}")
+                skipped_invalid += 1
                 continue
             if start.tzinfo is None:
                 start = start.replace(tzinfo=timezone.utc)
@@ -157,12 +164,14 @@ def generate_tags_calendar(tag_data: List[Dict], existing_calendar: Calendar, ex
                 day = date.fromisoformat(start_day)
             except Exception as e:
                 print(f"Skipping tag due to invalid date: {e}")
+                skipped_invalid += 1
                 continue
             event.add('dtstart', day)
             if end_day and end_day != start_day:
                 event.add('dtend', date.fromisoformat(end_day))
         else:
             print(f"Skipping tag with no time information: {uid}")
+            skipped_no_time += 1
             continue
 
         # Build description
@@ -171,7 +180,12 @@ def generate_tags_calendar(tag_data: List[Dict], existing_calendar: Calendar, ex
             event.add('description', comment)
 
         cal.add_component(event)
+        added += 1
 
+    print(
+        f"Summary: added {added}, skipped {skipped_existing} existing, "
+        f"{skipped_invalid} invalid, {skipped_no_time} without time info."
+    )
     return cal
 
 def save_calendar(calendar: Calendar, path: str):
