@@ -1,7 +1,7 @@
 from datetime import datetime, timezone, date, timedelta
 from typing import List, Dict
 from icalendar import Calendar, Event
-from uuid import uuid4
+import hashlib
 import os
 import re
 
@@ -40,6 +40,17 @@ TAG_LABELS = {
 
 # Regex to detect UUID-style tag_type_codes (custom tags)
 _UUID_PATTERN = re.compile(r'^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$', re.IGNORECASE)
+
+def _stable_uid_from_tag(tag: Dict) -> str:
+    """Build a deterministic UID from tag content so re-runs deduplicate correctly."""
+    parts = "|".join([
+        tag.get("tag_type_code", ""),
+        tag.get("start_time") or tag.get("start_day") or "",
+        tag.get("end_time") or tag.get("end_day") or "",
+        tag.get("comment") or "",
+    ])
+    digest = hashlib.sha1(parts.encode("utf-8")).hexdigest()
+    return f"oura-tag-{digest}"
 
 def format_tag_label(tag: Dict, custom_tag_names: dict = None) -> str:
     """Convert a tag to a human-readable label."""
@@ -110,7 +121,7 @@ def generate_tags_calendar(tag_data: List[Dict], existing_calendar: Calendar, ex
     skipped_no_time = 0
 
     for tag in tag_data:
-        uid = tag.get("id") or str(uuid4())
+        uid = tag.get("id") or _stable_uid_from_tag(tag)
         if uid in existing_uids:
             print(f"Skipping existing event with UID: {uid}")
             skipped_existing += 1
